@@ -17,7 +17,7 @@ public class TipCalculatorController {
             NumberFormat.getCurrencyInstance();
     private static final NumberFormat percent =
             NumberFormat.getPercentInstance();
-    private BigDecimal tipPercentage = new BigDecimal(0.15);
+    private BigDecimal tipPercentage = new BigDecimal("0.15");
 
     @FXML
     private TextField amountTextField;
@@ -35,13 +35,29 @@ public class TipCalculatorController {
     private Label tipPercentageLabel;
 
     @FXML
+    private TextField peopleTextField;
+
+    @FXML
+    private TextField perPersonTextiField;
+
+    @FXML
     private void calculateButtonPressed(ActionEvent event) {
         try {
             BigDecimal amount = new BigDecimal(amountTextField.getText());
-            BigDecimal tip = amount.multiply(tipPercentage);
-            BigDecimal total = amount.add(tip);
-            tipTextField.setText(currency.format(tip));
-            totalTextField.setText(currency.format(total));
+            try{
+                BigDecimal people = new BigDecimal(peopleTextField.getText());
+                BigDecimal tip = amount.multiply(tipPercentage);
+                BigDecimal total = amount.add(tip);
+                BigDecimal perPerson = total.divide(people, RoundingMode.HALF_UP);
+                tipTextField.setText(currency.format(tip));
+                totalTextField.setText(currency.format(total));
+                perPersonTextiField.setText(currency.format(perPerson));
+            } catch (NumberFormatException e) {
+                peopleTextField.setText("Enter amount");
+                peopleTextField.selectAll();
+                peopleTextField.requestFocus();
+            }
+
         } catch (NumberFormatException e) {
             amountTextField.setText("Enter amount");
             amountTextField.selectAll();
